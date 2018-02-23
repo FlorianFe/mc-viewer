@@ -1,5 +1,5 @@
 {
-  "name": "voxel-visualisation",
+  "name": "voxel-visualization",
   "description": "A visualisation web component for minecraft .schematics",
   "main": "voxel-visualisation.html",
   "dependencies": {
