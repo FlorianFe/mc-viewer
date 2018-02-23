@@ -4,5 +4,9 @@
 
 A visualisation web component for minecraft schematic files.
 
+## 🚀 Demo
+
+[See live demo here](https://florianfe.github.io/webcomponents/voxel-visualization/demo/)
+
 ## 🗒 Note
 The used texture pack "Faithful 32x32 Pack" (<a href="https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/resource-packs/1223254-faithful-32x32-pack-update-red-cat-clay-1-8">Link</a>) was made by "Vattic".
