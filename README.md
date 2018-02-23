@@ -1,5 +1,7 @@
 # \<voxel-visualization\>
 
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/florianfe/voxel-visualization)
+
 A visualisation web component for minecraft schematic files.
 
 ## 🗒 Note
