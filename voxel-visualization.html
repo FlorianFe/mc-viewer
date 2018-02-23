@@ -1,0 +1,31 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+
+<dom-module id="voxel-visualization">
+  <template id="template">
+    <style>
+
+      :host
+      {
+        display: block;
+        text-align: center;
+      }
+
+      #container
+      {
+        width: 100%;
+        height: 350px;
+      }
+
+    </style>
+    <div id="container">
+      <canvas id="canvas"></canvas>
+    </div>
+  </template>
+
+
+  <script src="../three.js/build/three.min.js"></script>
+  <script src="../zlib/zlib.min.js"></script>
+  <script src="libs/nbt.js"></script>
+  <script src="voxel-visualization.js"></script>
+</dom-module>

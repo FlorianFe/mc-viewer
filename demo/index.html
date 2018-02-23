@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>voxel-visualization demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-icons/iron-icons.html">
+    <link rel="import" href="../../iron-icons/iron-icon.html">
+    <link rel="import" href="../../paper-slider/paper-slider.html">
+    <link rel="import" href="../../paper-card/paper-card.html">
+    <link rel="import" href="../voxel-visualization.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles"></style>
+    </custom-style>
+
+    <custom-style>
+      <style>
+
+        table
+        {
+          width: 100%;
+        }
+
+        td
+        {
+          width: 80%;
+          text-align: center;
+        }
+
+        td.small
+        {
+          width: 10%;
+          text-align: center;
+        }
+
+        paper-slider
+        {
+          width: 100%;
+        }
+
+        paper-card
+        {
+          padding: 15px;
+          text-align: center;
+        }
+
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+
+      <h3>Schematic</h3>
+      <demo-snippet>
+        <template>
+          <voxel-visualization
+            schematic-path="schematics/house.schematic"
+          ></voxel-visualization>
+        </template>
+      </demo-snippet>
+
+      <h3>Textures</h3>
+      <demo-snippet>
+        <template>
+          <voxel-visualization
+            schematic-path="schematics/house.schematic"
+            texture-pack-path="faithful32pack/"
+          ></voxel-visualization>
+        </template>
+      </demo-snippet>
+
+
+
+      <br><br>
+
+      <h3>Zoom</h3>
+      <demo-snippet>
+        <template>
+          <dom-bind id="scope">
+            <template>
+              <voxel-visualization
+                schematic-path="schematics/tower.schematic"
+                texture-pack-path="faithful32pack/"
+                zoom="[[zoom]]"
+              ></voxel-visualization>
+
+              <br>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="small"><iron-icon icon="zoom-in"></iron-icon></td>
+                    <td class="small">[[zoom]]</td>
+                    <td><paper-slider pin value="{{zoom}}" min="0.25" max="4.0" step="0.125"></paper-slider></td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
+          </dom-bind>
+
+          <script>
+            scope.zoom = 1;
+          </script>
+        </template>
+      </demo-snippet>
+
+      <paper-card>
+        🗒 Note: The used texture pack "Faithful 32x32 Pack" (<a href="https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/resource-packs/1223254-faithful-32x32-pack-update-red-cat-clay-1-8">Link</a>) was made by "Vattic".
+      </paper-card>
+
+    </div>
+  </body>
+</html>
