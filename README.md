@@ -4,7 +4,7 @@
 
 A visualisation web component for minecraft schematic files.
 
-## Attributes
+## 📒 Attributes
 
 | Name  | Type | Description |
 | ------------- | ------------- | ------------- |
@@ -13,7 +13,7 @@ A visualisation web component for minecraft schematic files.
 | texturePackPath  | String  | Path to the root of an unzipped texture pack |
 | zoom  | Number  | Zoom level of the view (default is 1.0) |
 
-## Preview
+## 🖼 Preview
 ![Screenshot](https://florianfe.github.io/screenshots/voxel-visualization/screenshot.png)
 
 ## 🚀 Demo
