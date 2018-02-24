@@ -35,6 +35,16 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
       {
         type: Number,
         value: 1
+      },
+      ambientLightIntensity:
+      {
+        type: Number,
+        value: 0.5
+      },
+      directionalLightIntensity:
+      {
+        type: Number,
+        value: 0.5
       }
     };
   }
@@ -45,7 +55,9 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
         '_onSchematicJsonPathChanged(schematicJsonPath)',
         '_onSchematicPathChanged(schematicPath)',
         '_onSchematicChanged(schematic)',
-        '_onTexturePackPathChanged(texturePackPath)'
+        '_onTexturePackPathChanged(texturePackPath)',
+        '_onAmbientLightIntensityChanged(ambientLightIntensity)',
+        '_onDirectionalLightIntensityChanged(directionalLightIntensity)'
     ]
   }
 
@@ -88,6 +100,22 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     {
       this.schematic = JSON.parse(data);
     });
+  }
+
+  _onAmbientLightIntensityChanged(ambientLightIntensity)
+  {
+    let normalizedAmbientLightIntensity = parseInt(this.ambientLightIntensity * 0xff);
+    let ambientLightColor = normalizedAmbientLightIntensity * 0x010101;
+
+    this.ambientLight.color.set(ambientLightColor);
+  }
+
+  _onDirectionalLightIntensityChanged(directionalLightIntensity)
+  {
+    let normalizedDirectionalLightIntensity = parseInt(this.directionalLightIntensity * 0xff);
+    let directionalLightColor = normalizedDirectionalLightIntensity * 0x010101;
+
+    this.directionalLight.color.set(directionalLightColor);
   }
 
   _onSchematicPathChanged(schematicPath)
@@ -162,11 +190,17 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
     this.scene = new THREE.Scene();
 
-    var ambientLight = new THREE.AmbientLight(0xdddddd);
-    var PointLight = new THREE.PointLight(0xffffff, 0.15);
+    let normalizedAmbientLightIntensity = parseInt(this.ambientLightIntensity * 0xff);
+    let ambientLightColor = normalizedAmbientLightIntensity * 0x010101;
+    this.ambientLight = new THREE.AmbientLight(ambientLightColor);
 
-    this.scene.add(ambientLight);
-    this.scene.add(PointLight);
+    let normalizedDirectionalLightIntensity = parseInt(this.directionalLightIntensity * 0xff);
+    let directionalLightColor = normalizedDirectionalLightIntensity * 0x010101;
+    this.directionalLight = new THREE.DirectionalLight(directionalLightColor, 2);
+    this.directionalLight.position.set(2, 4, 5);
+
+    this.scene.add(this.ambientLight);
+    this.scene.add(this.directionalLight);
 
     if(schematic)
     {

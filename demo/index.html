@@ -11,6 +11,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../iron-icons/iron-icons.html">
+    <link rel="import" href="../../iron-icons/image-icons.html">
     <link rel="import" href="../../iron-icon/iron-icon.html">
     <link rel="import" href="../../paper-slider/paper-slider.html">
     <link rel="import" href="../../paper-card/paper-card.html">
@@ -107,6 +108,44 @@
 
           <script>
             scope.zoom = 1;
+          </script>
+        </template>
+      </demo-snippet>
+
+      <h3>Light</h3>
+      <demo-snippet>
+        <template>
+          <dom-bind id="scope2">
+            <template>
+              <voxel-visualization
+                schematic-path="schematics/tower.schematic"
+                texture-pack-path="faithful32pack/"
+                ambient-light-intensity="[[ambientLightIntensity]]"
+                directional-light-intensity="[[directionalLightIntensity]]"
+              ></voxel-visualization>
+
+              <br>
+
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="small"><iron-icon icon="image:wb-sunny"></iron-icon></td>
+                    <td class="small">[[ambientLightIntensity]]</td>
+                    <td><paper-slider pin value="{{ambientLightIntensity}}" min="0" max="1.0" step="0.05"></paper-slider></td>
+                  </tr>
+                  <tr>
+                    <td class="small"><iron-icon icon="image:wb-sunny"></iron-icon></td>
+                    <td class="small">[[directionalLightIntensity]]</td>
+                    <td><paper-slider pin value="{{directionalLightIntensity}}" min="0" max="1.0" step="0.05"></paper-slider></td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
+          </dom-bind>
+
+          <script>
+            scope2.ambientLightIntensity = 0.75;
+            scope2.directionalLightIntensity = 0.5;
           </script>
         </template>
       </demo-snippet>
