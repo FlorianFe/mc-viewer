@@ -56,7 +56,8 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
       '_onSchematicJsonPathChanged(schematicJsonPath)',
       '_onSchematicPathChanged(schematicPath)',
       '_onAmbientLightIntensityChanged(ambientLightIntensity)',
-      '_onDirectionalLightIntensityChanged(directionalLightIntensity)'
+      '_onDirectionalLightIntensityChanged(directionalLightIntensity)',
+      '_onZoomChanged(zoom)'
     ]
   }
 
@@ -129,6 +130,15 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     let directionalLightColor = normalizedDirectionalLightIntensity * 0x010101;
 
     if(this.directionalLight) this.directionalLight.color.set(directionalLightColor);
+  }
+
+  _onZoomChanged()
+  {
+    if(this.group)
+    {
+      let base = -2;
+      this.group.position.set(0, 0, base / this.zoom);
+    }
   }
 
   _onSchematicPathChanged(schematicPath)
@@ -246,8 +256,9 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
         let normals = new Float32Array(this.calculateNormals(faces, expandedWidth, expandedHeight, expandedDepth));
         let uvs = new Float32Array(this.calculateUVs(faces, blockIdList));
 
+        let base = -2;
         this.group = new THREE.Group();
-        this.group.position.set(0, 0, -3);
+        this.group.position.set(0, 0, base / this.zoom);
 
         for(let i=0; i<keys.length; i++)
         {
