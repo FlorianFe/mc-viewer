@@ -81,8 +81,8 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
   {
     if(this.renderer)
     {
-      let width = this.$["container"].clientWidth;
-      let height = this.$["container"].clientHeight;
+      let width = this.clientWidth;
+      let height = this.clientHeight;
 
       this.renderer.setSize(width, height);
       this.camera = new THREE.PerspectiveCamera(35, width/height, 0.1, 3000);
