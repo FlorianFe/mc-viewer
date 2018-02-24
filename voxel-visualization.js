@@ -463,8 +463,6 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
       let textureRotation = this.calculateTextureRotation(key, blockIdList);
 
-      console.log(textureRotation);
-
       let normalX = normal.x;
       let normalY = normal.y;
       let normalZ = normal.z;
