@@ -4,9 +4,9 @@
   "main": "voxel-visualisation.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "three.js": "threejs#*",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^2.1.0",
-    "zlib": "^3.46.1"
+    "zlib": "^3.46.1",
+    "three.js": "0.89.0"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
@@ -17,8 +17,7 @@
     "iron-icon": "PolymerElements/iron-icon#^2.1.0",
     "paper-card": "PolymerElements/paper-card#^2.1.0"
   },
-  "resolutions":
-  {
+  "resolutions": {
     "polymer": "^2.0.0"
   }
 }
