@@ -478,8 +478,6 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
         uvRotation = textureRotation;
       }
 
-      console.log(uvRotation)
-
       let coordinates = [
         1.0, 1.0,
         0.0, 1.0,
@@ -730,7 +728,6 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
           if(lastZValue && !zValue)
           {
             let blockIndex = x + y * width + (z-1) * width * height;
-            if(blockIndex < 0) console.log("negative index");
             let block = blocks[blockIndex];
 
             let face = { block: block, position: { x: x, y: y, z: z - 1 }, normal: { x: 0, y: 0, z: 1 } };
@@ -761,7 +758,6 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
           if(lastYValue && !yValue)
           {
             let blockIndex = x + (y-1) * width + z * width * height;
-            if(blockIndex < 0) console.log("negative index");
             let block = blocks[blockIndex];
 
             let face = { block: block, position: { x: x, y: y - 1, z: z }, normal: { x: 0, y: 1, z: 0 } };
@@ -792,7 +788,6 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
           if(lastXValue && !xValue)
           {
             let blockIndex = (x-1) + y * width + z * width * height;
-            if(blockIndex < 0) console.log("negative index");
             let block = blocks[blockIndex];
 
             let face = { block: block, position: { x: x - 1, y: y, z: z }, normal: { x: 1, y: 0, z: 0 } };
