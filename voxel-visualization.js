@@ -52,18 +52,19 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
   static get observers()
   {
     return [
-        '_onSchematicJsonPathChanged(schematicJsonPath)',
-        '_onSchematicPathChanged(schematicPath)',
-        '_onSchematicChanged(schematic)',
-        '_onTexturePackPathChanged(texturePackPath)',
-        '_onAmbientLightIntensityChanged(ambientLightIntensity)',
-        '_onDirectionalLightIntensityChanged(directionalLightIntensity)'
+      'draw(schematic, texturePackPath)',
+      '_onSchematicJsonPathChanged(schematicJsonPath)',
+      '_onSchematicPathChanged(schematicPath)',
+      '_onAmbientLightIntensityChanged(ambientLightIntensity)',
+      '_onDirectionalLightIntensityChanged(directionalLightIntensity)'
     ]
   }
 
   constructor()
   {
     super();
+
+    this.time = 0;
 
     // this.scene
     // this.camera
@@ -79,19 +80,31 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
   _onResize()
   {
-    if(this.renderer)
-    {
-      let width = this.clientWidth;
-      let height = this.clientHeight;
-
-      this.renderer.setSize(width, height);
-      this.camera = new THREE.PerspectiveCamera(35, width/height, 0.1, 3000);
-    }
+    this.draw();
   }
 
   connectedCallback()
   {
     super.connectedCallback();
+
+    let render = () =>
+    {
+      if(this.renderer && this.camera)
+      {
+        if(this.group)
+        {
+          this.group.rotation.y = this.time;
+        }
+
+        this.renderer.render(this.scene, this.camera);
+
+        this.time += 0.0025;
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    render();
   }
 
   _onSchematicJsonPathChanged(schematicJsonPath)
@@ -107,7 +120,7 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     let normalizedAmbientLightIntensity = parseInt(this.ambientLightIntensity * 0xff);
     let ambientLightColor = normalizedAmbientLightIntensity * 0x010101;
 
-    this.ambientLight.color.set(ambientLightColor);
+    if(this.ambientLight) this.ambientLight.color.set(ambientLightColor);
   }
 
   _onDirectionalLightIntensityChanged(directionalLightIntensity)
@@ -115,12 +128,12 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     let normalizedDirectionalLightIntensity = parseInt(this.directionalLightIntensity * 0xff);
     let directionalLightColor = normalizedDirectionalLightIntensity * 0x010101;
 
-    this.directionalLight.color.set(directionalLightColor);
+    if(this.directionalLight) this.directionalLight.color.set(directionalLightColor);
   }
 
   _onSchematicPathChanged(schematicPath)
   {
-    let file = this.baseURI + schematicPath;
+    let file = schematicPath;
     let request = new XMLHttpRequest();
     request.responseType = "arraybuffer";
 
@@ -172,52 +185,51 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     return (256 + char);
   }
 
-  _onSchematicChanged(schematic)
+  draw()
   {
-    let canvas = this.$["canvas"];
+    let blockIdListPath = this.resolveUrl("block_id_list.json");
 
-    this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-    this.renderer.setClearColor(0xfbfbfb);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-
-    if(this.scene)
+    this._readJsonFile(blockIdListPath, (data) =>
     {
-      while(this.scene.children.length > 0)
+      let canvas = this.$["canvas"];
+
+      this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+      this.renderer.setClearColor(0xfbfbfb);
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+
+      let width = this.clientWidth;
+      let height = this.clientHeight;
+      let aspectRatio = (width/height) ? (width/height) : 1;
+
+      this.renderer.setSize(width, height);
+      this.camera = new THREE.PerspectiveCamera(35, aspectRatio, 0.1, 3000);
+
+      this.scene = new THREE.Scene();
+
+      let normalizedAmbientLightIntensity = parseInt(this.ambientLightIntensity * 0xff);
+      let ambientLightColor = normalizedAmbientLightIntensity * 0x010101;
+      this.ambientLight = new THREE.AmbientLight(ambientLightColor);
+
+      let normalizedDirectionalLightIntensity = parseInt(this.directionalLightIntensity * 0xff);
+      let directionalLightColor = normalizedDirectionalLightIntensity * 0x010101;
+      this.directionalLight = new THREE.DirectionalLight(directionalLightColor, 2);
+      this.directionalLight.position.set(2, 4, 5);
+
+      this.scene.add(this.ambientLight);
+      this.scene.add(this.directionalLight);
+
+      if(this.schematic)
       {
-        this.scene.remove(this.scene.children[0]);
-      }
-    }
+        let blocks = this.schematic.blocks;
+        let width = this.schematic.width;
+        let height = this.schematic.height;
+        let depth = this.schematic.depth;
 
-    this.scene = new THREE.Scene();
+        let expandedBlocks = this.expand(blocks, width, height, depth);
+        let expandedWidth = width + 2;
+        let expandedHeight = height + 2;
+        let expandedDepth = depth + 2;
 
-    let normalizedAmbientLightIntensity = parseInt(this.ambientLightIntensity * 0xff);
-    let ambientLightColor = normalizedAmbientLightIntensity * 0x010101;
-    this.ambientLight = new THREE.AmbientLight(ambientLightColor);
-
-    let normalizedDirectionalLightIntensity = parseInt(this.directionalLightIntensity * 0xff);
-    let directionalLightColor = normalizedDirectionalLightIntensity * 0x010101;
-    this.directionalLight = new THREE.DirectionalLight(directionalLightColor, 2);
-    this.directionalLight.position.set(2, 4, 5);
-
-    this.scene.add(this.ambientLight);
-    this.scene.add(this.directionalLight);
-
-    if(schematic)
-    {
-      let blocks = schematic.blocks;
-      let width = schematic.width;
-      let height = schematic.height;
-      let depth = schematic.depth;
-
-      let expandedBlocks = this.expand(blocks, width, height, depth);
-      let expandedWidth = width + 2;
-      let expandedHeight = height + 2;
-      let expandedDepth = depth + 2;
-
-      let blockIdListPath = this.resolveUrl("block_id_list.json");
-
-      this._readJsonFile(blockIdListPath, (data) =>
-      {
         let blockIdList = JSON.parse(data);
         let solidBlocks = expandedBlocks.map((block) => blockIdList[block.id] ? true : false );
         let filledBlocks = this.fillVoids(solidBlocks, expandedWidth, expandedHeight, expandedDepth);
@@ -235,6 +247,7 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
         let uvs = new Float32Array(this.calculateUVs(faces, blockIdList));
 
         this.group = new THREE.Group();
+        this.group.position.set(0, 0, -3);
 
         for(let i=0; i<keys.length; i++)
         {
@@ -247,6 +260,7 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
           if(this.texturePackPath)
           {
             texture = new THREE.TextureLoader().load(this.calculateTexturePath(key, blockIdList));
+
             texture.magFilter = THREE.NearestFilter;
             texture.minFilter = THREE.LinearMipMapLinearFilter;
           }
@@ -264,43 +278,8 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
         }
 
         this.scene.add(this.group);
-      });
-
-      this.async(() =>
-      {
-        this._onResize();
-      }, 2000);
-
-      // Rendering Routine
-      let time = 0;
-
-      let render = () =>
-      {
-        if(this.renderer && this.camera)
-        {
-          if(this.group)
-          {
-            let base = -2;
-
-            this.group.position.set(0, 0, base / this.zoom);
-            this.group.rotation.y = time;
-          }
-
-          this.renderer.render(this.scene, this.camera);
-
-          time += 0.0025;
-        }
-
-        requestAnimationFrame(render);
       }
-
-      render();
-    }
-  }
-
-  _onTexturePackPathChanged(texturePackPath)
-  {
-    this._onSchematicChanged();
+    });
   }
 
   calculateTexturePath(key, blockIdList)
@@ -333,7 +312,37 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
     let textureName = texture.split(":")[0];
 
-    return [this.baseURI, this.texturePackPath, "/assets/minecraft/textures/blocks/", textureName, ".png"].join("");
+    return this._joinPath(this.texturePackPath, "assets/minecraft/textures/blocks/", textureName + ".png");
+  }
+
+  _joinPath(/* ... */)
+  {
+    let parts = [];
+    for (let i = 0, l = arguments.length; i < l; i++)
+    {
+      parts = parts.concat(arguments[i].split("/"));
+    }
+
+    let newParts = [];
+    for (let i = 0; i < parts.length; i++)
+    {
+      let part = parts[i];
+
+      if (!part || part === ".") continue;
+
+      if (part === "..")
+      {
+        newParts.pop();
+      }
+      else
+      {
+        newParts.push(part);
+      }
+    }
+    // Preserve the initial slash if there was one.
+    if (parts[0] === "") newParts.unshift("");
+    // Turn back into a single string path.
+    return newParts.join("/") || (newParts.length ? "/" : ".");
   }
 
   calculateTextureRotation(key, blockIdList)
@@ -838,7 +847,7 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
   _readJsonFile(file, callback)
   {
-    var rawFile = new XMLHttpRequest();
+    let rawFile = new XMLHttpRequest();
     rawFile.overrideMimeType("application/json");
     rawFile.open("GET", file, true);
     rawFile.onreadystatechange = () =>
