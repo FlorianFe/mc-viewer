@@ -4,8 +4,10 @@
 
 A visualisation web component for minecraft schematic files.
 
-## 🚀 Demo
+## Preview
+![Screenshot](https://florianfe.github.io/screenshots/voxel-visualization/screenshot.png)
 
+## 🚀 Demo
 [See live demo here](https://florianfe.github.io/webcomponents/voxel-visualization/demo/)
 
 ## 🗒 Note
