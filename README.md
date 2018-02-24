@@ -4,6 +4,15 @@
 
 A visualisation web component for minecraft schematic files.
 
+## Attributes
+
+| Name  | Type | Description |
+| ------------- | ------------- | ------------- |
+| schematic  | Object | JavaScript Object with information about the minecraft structure |
+| schematicPath  | String | Path to .schematic file and alternative to the "schematic" Attribute |
+| texturePackPath  | String  | Path to the root of an unzipped texture pack |
+| zoom  | Number  | Zoom level of the view (default is 1.0) |
+
 ## Preview
 ![Screenshot](https://florianfe.github.io/screenshots/voxel-visualization/screenshot.png)
 
