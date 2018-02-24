@@ -34,7 +34,7 @@ bower install --save voxel-visualization
 ![Screenshot](https://florianfe.github.io/screenshots/voxel-visualization/screenshot.png)
 
 ## 👀 Demo
-[See live demo here](https://florianfe.github.io/webcomponents/voxel-visualization/demo/)
+[See live demo here](https://florianfe.github.io/webcomponents/voxel-visualization/bower_components/voxel-visualization/demo/)
 
 ## 🗒 Note
 The used texture pack "Faithful 32x32 Pack" (<a href="https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/resource-packs/1223254-faithful-32x32-pack-update-red-cat-clay-1-8">Link</a>) was made by "Vattic".
