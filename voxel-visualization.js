@@ -193,12 +193,12 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
         // THREE.JS stuff
 
-        let vertices = new Float32Array(this.calculateVertices(faces, expandedWidth, expandedHeight, expandedDepth));
-        let normals = new Float32Array(this.calculateNormals(faces, expandedWidth, expandedHeight, expandedDepth));
-        let uvs = new Float32Array(this.calculateUVs(faces));
-
         let faceMap = this.calculateFaceMap(faces);
         let keys = Object.getOwnPropertyNames(faceMap);
+
+        let vertices = new Float32Array(this.calculateVertices(faces, expandedWidth, expandedHeight, expandedDepth));
+        let normals = new Float32Array(this.calculateNormals(faces, expandedWidth, expandedHeight, expandedDepth));
+        let uvs = new Float32Array(this.calculateUVs(faces, blockIdList));
 
         this.group = new THREE.Group();
 
@@ -300,6 +300,39 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     let textureName = texture.split(":")[0];
 
     return [this.baseURI, this.texturePackPath, "/assets/minecraft/textures/blocks/", textureName, ".png"].join("");
+  }
+
+  calculateTextureRotation(key, blockIdList)
+  {
+    let splittedKey = key.split(".");
+    let type = splittedKey[0];
+    let metaType = splittedKey[1];
+    let normal = JSON.parse(splittedKey[2]);
+
+    let textureObject = (blockIdList[type][metaType]) ? blockIdList[type][metaType] : blockIdList[type]["*"];
+    let texture;
+
+    if(typeof textureObject === 'object')
+    {
+      let orientation = "none";
+
+      if(normal.z == -1) orientation = "north";
+      if(normal.x == 1) orientation = "east";
+      if(normal.z == 1) orientation = "south";
+      if(normal.x == -1) orientation = "west";
+      if(normal.y == 1) orientation = "top";
+      if(normal.y == -1) orientation = "bottom";
+
+      texture = (textureObject[orientation]) ? textureObject[orientation] : textureObject["*"];
+    }
+    else
+    {
+      texture = textureObject;
+    }
+
+    let textureRotation = parseInt(texture.split(":")[1]);
+
+    return (textureRotation) ? textureRotation : 0;
   }
 
   calculateVertices(faces, width, height, depth)
@@ -415,61 +448,56 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
     return normals;
   }
 
-  calculateUVs(faces)
+  calculateUVs(faces, blockIdList)
   {
     let uvs = [];
 
     for(let i=0; i<faces.length; i++)
     {
       let face = faces[i];
+      let id = face.block.id;
+      let metaData = face.block.metaData;
+      let normal = face.normal;
+      let normalJson = JSON.stringify(normal);
+      let key = [id, metaData, normalJson].join(".");
 
-      let normalX = face.normal.x;
-      let normalY = face.normal.y;
-      let normalZ = face.normal.z;
+      let textureRotation = this.calculateTextureRotation(key, blockIdList);
+
+      console.log(textureRotation);
+
+      let normalX = normal.x;
+      let normalY = normal.y;
+      let normalZ = normal.z;
+
+      let uvRotation;
 
       if(normalX != 0)
       {
-        uvs.push(1.0);
-        uvs.push(0.0);
-
-        uvs.push(1.0);
-        uvs.push(1.0);
-
-        uvs.push(0.0);
-        uvs.push(1.0);
-
-        uvs.push(0.0);
-        uvs.push(0.0);
+        uvRotation = textureRotation + 270;
+      }
+      else
+      {
+        uvRotation = textureRotation;
       }
 
-      if(normalY != 0)
+      console.log(uvRotation)
+
+      let coordinates = [
+        1.0, 1.0,
+        0.0, 1.0,
+        0.0, 0.0,
+        1.0, 0.0
+      ];
+
+      let numberOfPoints = coordinates.length / 2;
+      let offset = uvRotation / 90;
+
+      for(let i=0; i<numberOfPoints; i++)
       {
-        uvs.push(1.0);
-        uvs.push(1.0);
+        let index = (offset + i) % numberOfPoints;
 
-        uvs.push(0.0);
-        uvs.push(1.0);
-
-        uvs.push(0.0);
-        uvs.push(0.0);
-
-        uvs.push(1.0);
-        uvs.push(0.0);
-      }
-
-      if(normalZ != 0)
-      {
-        uvs.push(1.0);
-        uvs.push(1.0);
-
-        uvs.push(0.0);
-        uvs.push(1.0);
-
-        uvs.push(0.0);
-        uvs.push(0.0);
-
-        uvs.push(1.0);
-        uvs.push(0.0);
+        uvs.push(coordinates[index * 2]);
+        uvs.push(coordinates[index * 2 + 1]);
       }
     }
 
