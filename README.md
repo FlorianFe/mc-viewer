@@ -13,10 +13,27 @@ A visualization web component for minecraft schematic files.
 | texturePackPath  | String  | Path to the root of an unzipped texture pack |
 | zoom  | Number  | Zoom level of the view (default is 1.0) |
 
+## 🚀 Usage
+
+1. Install package
+```bash
+bower install --save voxel-visualization
+```
+
+2. Import
+```html
+<link rel="import" href="bower_components/voxel-visualization/voxel-visualization.html">
+```
+
+3. Place in your HTML
+```html
+<voxel-visualization schematic-path="path/to/my/schematic/file.schematic"></voxel-visualization>
+```
+
 ## 🖼 Preview
 ![Screenshot](https://florianfe.github.io/screenshots/voxel-visualization/screenshot.png)
 
-## 🚀 Demo
+## 👀 Demo
 [See live demo here](https://florianfe.github.io/webcomponents/voxel-visualization/demo/)
 
 ## 🗒 Note
