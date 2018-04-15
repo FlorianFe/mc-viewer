@@ -160,12 +160,10 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
           let height = data.value.Height.value;
           let length = data.value.Length.value;
 
-          let dimension = Math.max(width, height, length);
-
           let blockIds = data.value.Blocks.value;
           let metaData = data.value.Data.value;
 
-          let blocks = new Array(dimension * dimension * dimension).fill({ id: 0, metaData: 0 });
+          let blocks = new Array(width * height * length).fill({ id: 0, metaData: 0 });
 
           for(let x=0; x<width; x++)
           {
@@ -173,15 +171,18 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
             {
               for(let z=0; z<length; z++)
               {
-                let blockId = blockIds[x + y * length * width + z * width];
-                let blockMetaData = metaData[x + y * length * width + z * width];
+                let sourceIndex = (y * length + z) * width + x;
+                let destinationIndex = x + y * width + z * width * height;
 
-                blocks[x + y * dimension + z * dimension * dimension] = { id: this._charToUnsignedChar(blockId), metaData: blockMetaData };
+                let blockId = blockIds[sourceIndex];
+                let blockMetaData = metaData[sourceIndex];
+
+                blocks[destinationIndex] = { id: this._charToUnsignedChar(blockId), metaData: blockMetaData };
               }
             }
           }
 
-          this.schematic = { width: dimension, height: dimension, depth: dimension, blocks : blocks };
+          this.schematic = { width: width, height: height, depth: length, blocks : blocks };
         });
       }
     }
