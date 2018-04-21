@@ -182,12 +182,7 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
             }
           }
 
-          let subdividedBlocks = subdivideOrigami(blocks, [width, height, length]);
-
-          //console.log(subdividedBlocks);
-          console.log(blocks);
-
-          this.schematic = { width: width*2, height: height*2, depth: length*2, blocks : subdividedBlocks };
+          this.schematic = { width: width, height: height, depth: length, blocks : blocks };
         });
       }
     }
@@ -236,10 +231,10 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
       if(this.schematic)
       {
-        let blocks = this.schematic.blocks;
-        let width = this.schematic.width;
-        let height = this.schematic.height;
-        let depth = this.schematic.depth;
+        let blocks = subdivideOrigami(this.schematic.blocks, [this.schematic.width, this.schematic.height, this.schematic.depth]);;
+        let width = this.schematic.width * 2;
+        let height = this.schematic.height * 2;
+        let depth = this.schematic.depth * 2;
 
         let expandedBlocks = this.expand(blocks, width, height, depth);
         let expandedWidth = width + 2;
