@@ -177,12 +177,17 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
                 let blockId = blockIds[sourceIndex];
                 let blockMetaData = metaData[sourceIndex];
 
-                blocks[destinationIndex] = { id: this._charToUnsignedChar(blockId), metaData: blockMetaData };
+                blocks[destinationIndex] = { type: this._charToUnsignedChar(blockId), metaType: blockMetaData };
               }
             }
           }
 
-          this.schematic = { width: width, height: height, depth: length, blocks : blocks };
+          let subdividedBlocks = subdivideOrigami(blocks, [width, height, length]);
+
+          //console.log(subdividedBlocks);
+          console.log(blocks);
+
+          this.schematic = { width: width*2, height: height*2, depth: length*2, blocks : subdividedBlocks };
         });
       }
     }
@@ -192,7 +197,7 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
 
   _charToUnsignedChar(char)
   {
-    if(char > 0) return char;
+    if(char >= 0) return char;
     return (256 + char);
   }
 
@@ -533,11 +538,45 @@ class VoxelVisualization extends Polymer.mixinBehaviors([Polymer.IronResizableBe
         uvRotation = textureRotation;
       }
 
+      let textureOffset = face.block.textureOffset;
+
+      let a = 0;
+      let b = 0;
+      let c = 0;
+
+      if(normal.x > 0) { a = 0; b = textureOffset.z; c = textureOffset.y }
+      if(normal.z > 0) { a = 1; b = textureOffset.x; c = textureOffset.y }
+      if(normal.y > 0) { a = 1; b = textureOffset.x; c = textureOffset.z + 1 }
+
+      if(normal.x < 0) { a = 0; b = textureOffset.z; c = textureOffset.y }
+      if(normal.z < 0) { a = 1; b = textureOffset.x; c = textureOffset.y }
+      if(normal.y < 0) { a = 1; b = textureOffset.x; c = textureOffset.z }
+
+
+      let texture2dOffset = [(a + b) % 2, c % 2];
+
+      let rotationVectors = [
+        [0, 0],
+        [0, 1],
+        [1, 1],
+        [1, 0]
+      ];
+
+      let textureRotationSteps = parseInt(textureRotation / 90);
+      let rotationBase = 0;
+
+      if(texture2dOffset[0] === rotationVectors[0][0] && texture2dOffset[1] === rotationVectors[0][1]) rotationBase = 0;
+      if(texture2dOffset[0] === rotationVectors[1][0] && texture2dOffset[1] === rotationVectors[1][1]) rotationBase = 1;
+      if(texture2dOffset[0] === rotationVectors[2][0] && texture2dOffset[1] === rotationVectors[2][1]) rotationBase = 2;
+      if(texture2dOffset[0] === rotationVectors[3][0] && texture2dOffset[1] === rotationVectors[3][1]) rotationBase = 3;
+
+      let rotationResult = rotationVectors[(rotationBase - textureRotationSteps + 4) % 4];
+
       let coordinates = [
-        1.0, 1.0,
-        0.0, 1.0,
-        0.0, 0.0,
-        1.0, 0.0
+        rotationResult[0] * 0.5 + 0.5, rotationResult[1] * 0.5 + 0.5,
+        rotationResult[0] * 0.5 + 0.0, rotationResult[1] * 0.5 + 0.5,
+        rotationResult[0] * 0.5 + 0.0, rotationResult[1] * 0.5 + 0.0,
+        rotationResult[0] * 0.5 + 0.5, rotationResult[1] * 0.5 + 0.0
       ];
 
       let numberOfPoints = coordinates.length / 2;
