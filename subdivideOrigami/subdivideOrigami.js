@@ -224,8 +224,6 @@ function transformStairs(original, subdivisionBlock, textureOffset, frontNeighbo
       frontNeighbourRotation === 90 && leftNeighbourRotation === 0
     )
     {
-      console.log("RULE 1", frontNeighbourRotation, rightNeighbourRotation, leftNeighbourRotation);
-
       if(original.metaType % 4 == 0 /* East */ )
       {
         if(textureOffset.x == 1) return MATERIAL;
@@ -254,8 +252,6 @@ function transformStairs(original, subdivisionBlock, textureOffset, frontNeighbo
     // Case 2.1
     if(frontNeighbourRotation === 270)
     {
-      console.log("RULE 2.1");
-
       if(original.metaType % 4 == 0 /* East */)
       {
         return (textureOffset.x == 1 && textureOffset.z == 0) ? MATERIAL : AIR;
@@ -280,8 +276,6 @@ function transformStairs(original, subdivisionBlock, textureOffset, frontNeighbo
     // Case 2.2
     if(frontNeighbourRotation === 90)
     {
-      console.log("RULE 2.2");
-
       if(original.metaType % 4 == 0 /* East */)
       {
         return (textureOffset.x == 1 && textureOffset.z == 1) ? MATERIAL : AIR;
