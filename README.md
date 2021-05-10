@@ -1,8 +1,7 @@
-# \<voxel-visualization\>
+# \<mc-viewer\>
 
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/florianfe/voxel-visualization)
-
-A visualization web component for minecraft schematic files and part of the [PaperCubes](https://github.com/FlorianFe/PaperCubes) application.
+A visualization web component for minecraft schematic files and part of the [PaperCubes](https://github.com/FlorianFe/PaperCubes) application. <br>
+🚧 currently under construction. Will be renamed from <voxel-visualization> to <mc-viewer>
 
 ## 📒 Attributes
 
