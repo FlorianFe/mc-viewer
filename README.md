@@ -4,7 +4,8 @@ A visualization web component for minecraft schematic files and part of the [Pap
 
 ## ⚠️ Important 
 
-🚧 currently under construction. Will be renamed from \<voxel-visualization\> to \<mc-viewer\>
+🚧 currently under construction. Will be renamed from \<voxel-visualization\> to \<mc-viewer\>. 
+But you can still use the old version by the \<voxel-visualization\> npm-package. 
 
 ## 📒 Attributes
 
