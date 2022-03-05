@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@google/model-viewer": "^1.6.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "browserify-zlib": "^0.2.0",
     "flood-fill": "^0.1.1",
     "lit-element": "^2.4.0",
