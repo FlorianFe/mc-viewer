@@ -6,11 +6,11 @@ const ignoreNameSpace = (str) =>
     return (str.includes(':')) ? str.split(':')[1] : str
 }
 
-const prefetchJSONFiles = async (paths) => 
+const resolveBlockStates = async (paths) => 
 {
     const MODELS_BASE_PATH = 'texture-pack/assets/minecraft/models'
 
-    return await resolvePathsDeeply(paths, (obj, enqueue) => 
+    return resolvePathsDeeply(paths, (obj, enqueue) => 
     { 
         if(obj.variants != undefined)
         {
@@ -42,4 +42,4 @@ const prefetchJSONFiles = async (paths) =>
     })
 }
 
-export default prefetchJSONFiles
+export default resolveBlockStates

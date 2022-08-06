@@ -1,5 +1,5 @@
 
-const getTexturesOfPaletteEntry = () => 
+const getTexturesOfPaletteEntry = (entry, prefetchedJSONFiles) => 
 {
     
 
@@ -12,3 +12,11 @@ const getTexturesOfPaletteEntry = () =>
         west: {  name: 'west.png', clockWiseRotations: 0 }
     }
 }
+
+
+const getTexturesOfPaletteEntries = (palette, prefetchedJSONFiles) => 
+{
+    return palette.map((entry) => getTexturesOfPaletteEntry(entry, prefetchedJSONFiles))
+}
+
+export default getTexturesOfPaletteEntries

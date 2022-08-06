@@ -41,5 +41,6 @@ module.exports =
         global: true,
         __filename: true,
         __dirname: true,
-    }
+    },
+    watch: true
 }

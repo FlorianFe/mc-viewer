@@ -7,9 +7,23 @@ import { BufferGeometry, BufferAttribute, MeshStandardMaterial, Mesh, TextureLoa
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 
 import filterTexturesByBlock from './src/filterTexturesByBlock'
-import prefetchJSONFiles from './src/prefetchJSONFiles/prefetchJSONFiles'
+import resolveBlockStates from './src/resolveBlockStates/resolveBlockStates'
+import processNBT from './src/processNBT/processNBT'
 
 import '@google/model-viewer'
+
+
+const first = (arr) => 
+{
+  if(arr.lengeth < 1) throw new Error("Array has no first Element")
+  return arr[0]
+}
+
+const second = (arr) => 
+{
+  if(arr.length < 2) throw new Error("Array has no second Element")
+  return arr[1]
+}
 
 /**
  * `mc-viewer`
@@ -119,25 +133,29 @@ class McViewer extends LitElement
     })
   }
 
-  loadVoxModel(fileURL)
+  async loadVoxModel(fileURL)
   {
-    axios
+    // 1. load SchematicFile
+    await axios
       .get(fileURL, { responseType: 'arraybuffer' })
       .then(async (schematicEncodedResponse) => 
       {
+        // 2. parse schematic File
         // ! Buffer needs to be polyfilled / defined globally
         const { parsed } = await parse(Buffer(schematicEncodedResponse.data))
-        const paletteKeys = Object.keys(parsed.value.Palette.value)
+        
+        // 3. process NBT of Schematic File
+        const schematic = processNBT(parsed)
+        const palette = schematic.palette
         // const textures = getTexturesOfPaletteEntries(paletteKeys)
 
+        // 4. prefetch Block States of Schematic File Dependencies
         const BLOCK_STATE_BASE_PATH = 'texture-pack/assets/minecraft/blockstates'
-        const SUB_PATHS = [ 'dirt' ]
-        
-        const blockStatePaths = SUB_PATHS.map((subPath) => [BLOCK_STATE_BASE_PATH, subPath].join('/') + '.json' )
+        const subPaths = palette.map((paletteEntry) => first(second(paletteEntry.split(':')).split('[')))
+        const blockStatePaths = subPaths.map((subPath) => [ BLOCK_STATE_BASE_PATH, subPath ].join('/') + '.json')
+        const resolvedBlockStates = await resolveBlockStates(blockStatePaths)
 
-        const prefetched = await prefetchJSONFiles(blockStatePaths)
-
-        console.log(prefetched)
+        console.log(subPaths, blockStatePaths, resolvedBlockStates)
       })
   }
 
@@ -150,13 +168,6 @@ class McViewer extends LitElement
         :host
         {
           display: block;
-          padding: 5px;
-        }
-
-        #model-viewer
-        {
-          width: 100%;
-          height: 100%;
         }
 
       </style>
@@ -166,4 +177,11 @@ class McViewer extends LitElement
   }
 }
 
-window.customElements.define('mc-viewer', McViewer);
+// Registration
+(() => 
+{
+  if(Buffer == undefined) throw new Error("Buffer must be polyfilled")
+  if(process == undefined || process.nextTick == undefined) throw new Error("process.nextTick must be polyfilled")
+
+  customElements.define('mc-viewer', McViewer)
+})()

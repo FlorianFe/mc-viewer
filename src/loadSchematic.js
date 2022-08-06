@@ -18,30 +18,30 @@ export default function (fileContent, callback)
         console.log(data.value.Palette);
         console.log(data.value.BlockData);
     
-        let palette = data.value.Palette.value;
-        let paletteMax = data.value.PaletteMax.value;
-        let blockData = data.value.BlockData.value;
+        const palette = data.value.Palette.value;
+        const paletteMax = data.value.PaletteMax.value;
+        const blockData = data.value.BlockData.value;
     
-        let keys = Object.keys(palette);
+        const keys = Object.keys(palette);
         let map = new Array(paletteMax);
     
         keys.forEach((paletteKey) => 
         {
-            let paletteValue = palette[paletteKey].value;
+            const paletteValue = palette[paletteKey].value;
     
             map[paletteValue] = paletteKey.split('[')[0];
         });
 
-        let sx = data.value.Width.value;
-        let sy = data.value.Height.value;
-        let sz = data.value.Length.value;
+        const sx = data.value.Width.value;
+        const sy = data.value.Height.value;
+        const sz = data.value.Length.value;
 
-        let binarifiedBlockData = blockData.map((item) => 
+        const binarifiedBlockData = blockData.map((item) => 
         {
             if(fullBlockList.includes(map[item]))
             {
-                let basePath = "texture pack/assets/minecraft/models/block/";
-                parseJsonFile(basePath + map[item].split(':')[1] + '.json', (data) => { /*console.log(data)*/ })
+                const BASE_PATH = "texture pack/assets/minecraft/models/block/"
+                parseJsonFile(BASE_PATH + map[item].split(':')[1] + '.json', (childData) => { /*console.log(childData)*/ })
                 return item;
             }
             else
@@ -54,13 +54,9 @@ export default function (fileContent, callback)
         let blocks = ndarray(binarifiedBlockData, [sy, sz, sx]);
         let transposedBlocks = blocks.transpose(1, 0, 2);
 
-        // console.log(transposedBlocks);
-
         let triangulatedVoxels = triangulateVoxels(transposedBlocks, { exclude: [-1] });
 
         console.log(triangulatedVoxels);
-
-        // console.log(triangulatedVoxels.vertices);
 
         callback(triangulatedVoxels);
     });

@@ -5,7 +5,9 @@
   "main": "mc-viewer.js",
   "scripts": {
     "build-demo": "webpack --config demo/webpack.config.js",
-    "start": "webpack --config demo/webpack.config.js && sirv demo"
+    "start": "sirv demo",
+    "dev": "webpack --config demo/webpack.config.js"
+
   },
   "author": "",
   "license": "ISC",
