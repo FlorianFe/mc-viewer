@@ -1,7 +1,11 @@
 # \<mc-viewer\>
 
-A visualization web component for minecraft schematic files and part of the [PaperCubes](https://github.com/FlorianFe/PaperCubes) application. <br>
-🚧 currently under construction. Will be renamed from \<voxel-visualization\> to \<mc-viewer\>
+A visualization web component for minecraft schematic files and part of the [PaperCubes](https://github.com/FlorianFe/PaperCubes) application.
+
+## ⚠️ Important 
+
+🚧 currently under construction. Will be renamed from \<voxel-visualization\> to \<mc-viewer\>. 
+But you can still use the old version by the \<voxel-visualization\> npm-package. 
 
 ## 📒 Attributes
 
